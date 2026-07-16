@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X² Lab — Hybrid Quantum Acoustic Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #FFFFFF;
+      --bg-soft:   #F2F4F8;
+      --text:      #111118;
+      --muted:     #6B7280;
+      --accent:    #2563EB;
+      --accent-bg: #EFF4FF;
+      --divider:   #E5E7EB;
+      --sidebar-w: 220px;
+      --nav-h:     60px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* ── TOP NAV ── */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--divider);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; z-index: 200;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700;
+      color: var(--text); text-decoration: none; letter-spacing: -0.02em;
+    }
+    .nav-logo sup { font-size: 12px; vertical-align: super; color: var(--accent); }
+    .nav-inst {
+      font-size: 12px; color: var(--muted); margin-left: 12px;
+      font-weight: 400; display: inline;
+    }
+    .lang-toggle {
+      display: flex; align-items: center;
+      background: var(--bg-soft); border-radius: 20px; padding: 3px; gap: 2px;
+    }
+    .lang-btn {
+      font-size: 12px; font-weight: 500; padding: 4px 12px;
+      border-radius: 16px; border: none; background: transparent;
+      color: var(--muted); cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    }
+    .lang-btn.active { background: var(--bg); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    /* ── LAYOUT ── */
+    .page-layout {
+      display: flex;
+      padding-top: var(--nav-h);
+      min-height: 100vh;
+    }
+
+    /* ── LEFT SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--nav-h);
+      height: calc(100vh - var(--nav-h));
+      overflow-y: auto;
+      border-right: 1px solid var(--divider);
+      padding: 40px 0 40px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-section {
+      padding: 0 24px;
+      margin-bottom: 32px;
+    }
+    .sidebar-group-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 8px; padding: 0 8px;
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidebar nav a {
+      font-size: 13.5px; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      padding: 7px 12px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      display: block;
+    }
+    .sidebar nav a:hover { color: var(--accent); background: var(--accent-bg); }
+    .sidebar nav a.active { color: var(--accent); background: var(--accent-bg); }
+
+    .sidebar-divider {
+      height: 1px; background: var(--divider);
+      margin: 4px 24px 28px;
+    }
+
+    .sidebar-contact {
+      padding: 0 24px;
+      margin-top: auto;
+    }
+    .sidebar-contact-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+    }
+    .sidebar-contact a {
+      display: block; font-size: 12.5px; color: var(--accent);
+      text-decoration: none; margin-bottom: 6px; line-height: 1.4;
+    }
+    .sidebar-contact a:hover { text-decoration: underline; }
+    .sidebar-contact p { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 0 64px 80px 64px;
+      max-width: 820px;
+    }
+
+    /* ── HERO (inside main) ── */
+    .hero {
+      padding: 72px 0 64px;
+      border-bottom: 1px solid var(--divider);
+      margin-bottom: 0;
+    }
+    .hero-eyebrow {
+      font-size: 11.5px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+      line-height: 1.1; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 20px;
+    }
+    .hero h1 sup { font-size: 0.52em; vertical-align: super; color: var(--accent); }
+    .hero-sub {
+      font-size: 16.5px; color: var(--muted);
+      max-width: 580px; line-height: 1.7;text-align: justify;
+    }
+
+    /* ── SECTIONS ── */
+    .section { padding: 64px 0; border-top: 1px solid var(--divider); }
+    .section-label {
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .section h2 {
+      font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 600;
+      letter-spacing: -0.02em; margin-bottom: 32px; color: var(--text);
+    }
+
+    /* ── NEWS ── */
+    .news-item {
+      display: grid; grid-template-columns: 90px 1fr;
+      gap: 0 24px; padding: 18px 0;
+      border-bottom: 1px solid var(--divider); align-items: baseline;
+    }
+    .news-item:first-child { border-top: 1px solid var(--divider); }
+    .news-date { font-size: 12px; color: var(--muted); padding-top: 2px; }
+    .news-content { display: flex; flex-direction: column; gap: 4px; }
+    .news-tag {
+      display: inline-block; font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-bg);
+      padding: 2px 7px; border-radius: 3px; width: fit-content;
+    }
+    .news-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; }
+
+    /* ── RESEARCH ── */
+    .research-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .research-card {
+      background: var(--bg-soft); border-radius: 8px; padding: 24px;
+      border: 1px solid transparent; transition: border-color 0.15s;
+    }
+    .research-card:hover { border-color: var(--accent); }
+    .research-card .icon { font-size: 22px; margin-bottom: 12px; display: block; }
+    .research-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .research-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PUBLICATIONS ── */
+    .pub-item { padding: 22px 0; border-bottom: 1px solid var(--divider); }
+    .pub-item:first-child { border-top: 1px solid var(--divider); }
+    .pub-row1 { display: flex; align-items: baseline; gap: 12px; margin-bottom: 5px; }
+    .pub-year { font-size: 12px; font-weight: 600; color: var(--muted); min-width: 34px; letter-spacing: 0.04em; }
+    .pub-title { font-size: 14.5px; font-weight: 500; color: var(--text); line-height: 1.4; }
+    .pub-authors { font-size: 12.5px; color: var(--muted); margin-bottom: 2px; padding-left: 46px; }
+    .pub-journal { font-size: 12.5px; color: var(--muted); font-style: italic; margin-bottom: 8px; padding-left: 46px; }
+    .pub-links { display: flex; gap: 8px; padding-left: 46px; }
+    .pub-link {
+      font-size: 11.5px; font-weight: 500; color: var(--accent); text-decoration: none;
+      padding: 2px 9px; border: 1px solid var(--accent); border-radius: 3px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .pub-link:hover { background: var(--accent); color: #fff; }
+
+    /* ── HOME NEWS ── */
+    .home-news { padding: 0 0 64px; border-top: 1px solid var(--divider); margin-top: 0; padding-top: 40px; }
+
+    /* ── PEOPLE ── */
+    .people-group-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px; margin-top: 32px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--divider);
+    }
+    .people-group-label:first-of-type { margin-top: 0; }
+    .people-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .person-card {
+      background: var(--bg-soft); border-radius: 8px; padding: 18px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .person-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--accent-bg); display: flex; align-items: center;
+      justify-content: center; font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 6px;
+    }
+    .person-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
+    .person-role { font-size: 11.5px; color: var(--muted); }
+    .person-topic { font-size: 11.5px; color: var(--accent); }
+    .pi-card {
+      display: flex; gap: 24px; align-items: flex-start;
+      background: var(--bg-soft); border-radius: 8px; padding: 24px; margin-bottom: 8px;
+    }
+    .pi-avatar {
+      width: 64px; height: 64px; border-radius: 50%; background: var(--accent-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
+      color: var(--accent); flex-shrink: 0;
+    }
+    .pi-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .pi-title { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+    .pi-bio { font-size: 13px; color: var(--muted); line-height: 1.65; text-align: justify;}
+
+    /* ── GROUP PICTURES ── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .gallery-item {
+      border-radius: 8px; overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--bg-soft);
+      border: 1px solid var(--divider);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      cursor: pointer;
+    }
+    .gallery-item.wide {
+      grid-column: span 2;
+      aspect-ratio: 16/7;
+    }
+    .gallery-placeholder-icon { font-size: 28px; opacity: 0.35; }
+    .gallery-placeholder-text { font-size: 11.5px; color: var(--muted); text-align: center; padding: 0 12px; }
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(17,17,24,0.65); color: #fff;
+      font-size: 11.5px; padding: 6px 10px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .gallery-item:hover .gallery-caption { opacity: 1; }
+    /* Real images when provided */
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      position: absolute; top: 0; left: 0;
+    }
+
+    /* ── OPEN POSITIONS ── */
+    .position-list { display: flex; flex-direction: column; gap: 16px; }
+    .position-card {
+      border: 1px solid var(--divider); border-radius: 8px; padding: 24px;
+      transition: border-color 0.15s;
+    }
+    .position-card:hover { border-color: var(--accent); }
+    .position-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .position-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; color: var(--text); }
+    .position-badge {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: #16a34a;
+      background: #f0fdf4; border-radius: 3px; padding: 2px 8px;
+    }
+    .position-desc { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .position-reqs { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+    .position-reqs li {
+      font-size: 13px; color: var(--muted); padding-left: 14px; position: relative;
+    }
+    .position-reqs li::before {
+      content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: 700;
+    }
+    .position-apply {
+      display: inline-block; font-size: 13px; font-weight: 500;
+      color: var(--accent); text-decoration: none;
+      padding: 6px 16px; border: 1px solid var(--accent); border-radius: 5px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .position-apply:hover { background: var(--accent); color: #fff; }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 600px; }
+    .contact-block-label {
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--divider); padding: 28px 64px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px; margin-left: var(--sidebar-w);
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); }
+    .footer-logo sup { font-size: 9px; color: var(--accent); vertical-align: super; }
+    .footer-copy { font-size: 12px; color: var(--muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      .main-content { padding: 0 24px 60px; }
+      footer { margin-left: 0; padding: 24px; }
+      .research-grid { grid-template-columns: 1fr; }
+      .people-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-item.wide { grid-column: span 2; }
+      .pub-authors, .pub-journal, .pub-links { padding-left: 0; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      .people-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item.wide { grid-column: span 1; aspect-ratio: 4/3; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<header class="topnav">
+  <div>
+    <a href="#" class="nav-logo">X<sup>2</sup> Lab</a>
+    <span class="nav-inst" data-en="Hybrid Quantum Systems" data-zh="混合量子系统">Hybrid Quantum Systems</span>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn"        id="btn-zh" onclick="setLang('zh')">中文</button>
+  </div>
+</header>
+
+<!-- ── PAGE LAYOUT ── -->
+<div class="page-layout">
+
+  <!-- ── LEFT SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-group-label" data-en="Navigation" data-zh="导航"></div>
+      <nav>
+        <a href="#home"         data-en="Home"         data-zh="首页">Home</a>
+        <a href="#research"     data-en="Research"     data-zh="研究方向">Research</a>
+        <a href="#publications" data-en="Publications" data-zh="论文成果">Publications</a>
+        <a href="#people"       data-en="People"       data-zh="团队成员">People</a>
+        <a href="#positions"    data-en="Openings"     data-zh="招募信息">Openings</a>
+        <a href="#gallery"      data-en="Gallery"      data-zh="团队照片">Gallery</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-contact">
+      <div class="sidebar-contact-label" data-en="Contact" data-zh="联系">Contact</div>
+      <a href="mailto:xiangxi1008@gmail.com">xiangxi1008@gmail.com</a>
+      <a href="https://scholar.google.com/citations?user=sLdBe90AAAAJ&hl=en" target="_blank">Google Scholar</a>
+      <a href="https://orcid.org/0000-0001-6195-1959" target="_blank">ORCID</a>
+      <a href="cv.pdf" target="_blank" data-en="Download CV" data-zh="下载简历">Download CV</a>
+    </div>
+  </aside>
+
+
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="main-content">
+
+    <!-- HOME -->
+    <section id="home">
+      <div class="hero">
+        <div class="hero-eyebrow"
+          data-en="School of Physics · Zhejiang University"
+          data-zh="物理学院 · 浙江大学">School of Physics · Zhejiang University</div>
+       
+        <h2 data-en="X<sup>2</sup> -Hybrid Quantum System Lab(website under construction)" 
+			data-zh="X<sup>2</sup> 混合量子系统实验室 (网站建设中)">
+			X<sup>2</sup>
+			<span class="h1-subtitle">
+						-Hybrid Quantum System Lab (website under construction)
+			</span>
+		</h2>
+		<p class="hero-sub"
+          data-en="The interplay between light and mechanical objects has been one of the most fascinating research topics in physics. 
+		  It not only extends the exploration of quantum phenomena to macroscopic scales but also enables ultra-precise measurements 
+		  of mass, force, displacement, acceleration, and so on.
+		  <br><br>
+			Our research focuses on the development of ultralow-loss micro- and nano-optomechanical devices and integrated mechanical circuits. 
+			These platforms provide unique opportunities for both precision sensing and quantum technologies. 
+			y integrating ultralow-loss mechanical systems with superconducting circuits, photonic platforms, or others, 
+			we aim to advance interdisciplinary research spanning quantum science, topological physics, biophysics, and spectroscopy."
+		  data-zh="光与机械系统之间的相互作用是现代物理学中最令人振奋的研究前沿之一。
+		  它不仅将量子现象的探索拓展到宏观尺度，还能够实现对质量、力、位移、加速度等物理量的超高精度测量。
+		  <br><br>
+		  我们的研究致力于开发超低损耗微纳光机械器件和集成机械电路。
+		  这些平台为高精度传感和量子技术提供了独特的优势。
+		  通过将超低损耗机械系统与超导器件、光子器件以及其他物理平台相结合，
+		  我们致力于构建新型混合量子系统，推动量子科学、拓扑物理、生物物理和光谱学等交叉学科的发展。">
+          The interplay between light and mechanical objects has been one of the most fascinating research topics in physics. 
+		  It not only extends the exploration of quantum phenomena to macroscopic scales but also enables ultra-precise measurements 
+		  of mass, force, displacement, acceleration, and so on.
+		  <br><br>
+		  Our research focuses on the development of ultralow-loss micro- and nano-optomechanical devices and integrated mechanical circuits. 
+		  These platforms provide unique opportunities for both precision sensing and quantum technologies. 
+		  By integrating ultralow-loss mechanical systems with superconducting circuits, photonic platforms, or others, 
+		  we aim to advance interdisciplinary research spanning quantum science, topological physics, biophysics, and spectroscopy.
+		  <!--<br><br>The vision of our lab is to enjoy exploring the unexplored part of physics.我们实验室的愿景是以好奇心和探索精神，拓展未知的物理和应用前沿"-->
+		  
+        </p>
+      </div>
+	  
+
+      <div class="home-news">
+        <div class="section-label" data-en="News" data-zh="最新动态">News</div>
+        <div class="news-list">
+		  <div class="news-item">
+            <div class="news-date">2026.07</div>
+            <div class="news-content">
+              <span class="news-tag" data-en="Openings" data-zh="招募">Openings</span>
+              <div class="news-title"
+                data-en="We are recruiting Master and PhD students, postdocs, and RA. See Openings for details."
+                data-zh="我们正在招募硕士生、博士生、博士后以及博士后，详情请见招募信息页面。">
+                We are recruiting Master and PhD students, postdocs, and RA. See Openings for details.
+              </div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-date">2026.07</div>
+            <div class="news-content">
+              <span class="news-tag" data-en="Starting of the group" data-zh="团队成立啦">Starting of the group</span>
+              <div class="news-title"
+                data-en="Dr. Xiang Xi accepted the offer of ZJU Physics, and will join there soon"
+                data-zh="习翔博士即将加入浙江大学物理学院，从事光学、声学与量子信息相关的研究">
+                Dr. Xiang Xi accepted the offer of ZJU Physics, and will join there soon。
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="section" id="research">
+      <div class="section-label" data-en="Research" data-zh="研究方向">Research</div>
+      <h2 data-en="What We Work On" data-zh="我们的研究">What We Work On</h2>
+      <div class="research-grid">
+        <div class="research-card">
+          <span class="icon">⚛️</span>
+          <h3 data-en="Ultra-low-loss classical and quantum acoustics" data-zh="超低损耗经典和量子声学">Ultra-low-loss classical and quantum acoustics</h3>
+          <p data-en="We develop phononic devices and circuits with state-of-the-art performance. We aim to hybrid those devices with optical, superconducting circuits, and others
+						for sensing and quantum applications. We include the concept of topology into our circuit design."
+             data-zh="我们注重开发性能最好之一的声子器件与声子芯片，并将其与光学、微波超导等芯片耦合起来形成混合系统用在传感和量子应用中。我们将拓扑的概念引入到我们声子芯片设计中。">
+            "We develop phononic devices and circuits with state-of-the-art performance. We aim to hybrid those devices with optical, superconducting circuits, and others
+						for sensing and quantum applications. We include the concept of topology into our circuit design."
+          </p>
+        </div>
+        <div class="research-card">
+          <span class="icon">🔗</span>
+          <h3 data-en="Classical and quantum sensing" data-zh="经典和量子传感">Classical and quantum sensing</h3>
+          <p data-en="With one of the best phononic devices we have, we will extend them for various sensing applications.
+		  Especially, we focus on the new technique of phononic interferometry."
+             data-zh="我们将我们开发的世界上性能最好的声子器件（之一）用于各种传感的应用之中。类似光学干涉仪，我们将开发新型的声学干涉仪用于各种传感用途中。">
+            With one of the best phononic devices we have, we will extend them for various sensing applications.
+		  Especially, we focus on the new technique of phononic interferometry.
+          </p>
+        </div>
+        <div class="research-card">
+          <span class="icon">🌐</span>
+          <h3 data-en="Quantum interconnect and memory" data-zh="量子互联与量子存储">Quantum transduction and memory</h3>
+          <p data-en="Based on our the strong coupling of our ultra-low-loss phononic membranes with optical cavity and superconducting circuits, 
+		  we aim to develop quantum microwave-to-optical transducer and memory for future quantum network."
+             data-zh="我们的超低损耗的声子器件具有很长的量子寿命。基于其与光学谐振器和超导回路的强耦合，我们研发微波-光学量子信号转换及量子存储。这是将来的量子互联网络中重要的器件之一。">
+            Based on our the strong coupling of our ultra-low-loss phononic membranes with optical cavity and superconducting circuits, 
+		  we aim to develop quantum microwave-to-optical transducer and memory for future quantum network.
+          </p>
+        </div>
+		<div class="research-card">
+          <span class="icon">🎵</span>
+          <h3 data-en="New Physics" data-zh="探索新物理">New Physics</h3>
+          <p data-en="Our phononic devices are among the best sensors for force, mass, and so on. 
+		  It is a very good plaform to explore unknown physics. For example, we can use it to explore fundamental formulation of optical force."
+             data-zh="我们的声子器件是世界上最好的力、质量等传感器之一，因此它是一个很好的平台去研究很多未被解决的物理问题或者现象。例如，我们可以用它去研究光学力的基础定律等问题。">
+            Our phononic devices are among the best sensors for force, mass, and so on. 
+		  It is a very good plaform to explore unknown physics. For example, we can use it to explore fundamental formulation of optical force.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section class="section" id="publications">
+      <div class="section-label" data-en="Publications" data-zh="代表性论文">Publications</div>
+      <h2 data-en="Selected Papers" data-zh="代表性成果">Selected Papers</h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2025</span>
+            <span class="pub-title"
+              data-en="A soft-clamped topological waveguide for phonons"
+              data-zh="A soft-clamped topological waveguide for phonons">
+              A soft-clamped topological waveguide for phonons
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi†, Ilia Chernobrovkin, Jan Košata, Mads B. Kristensen, Eric C. Langman, Anders S. Sørensen, Oded Zilberberg, Albert Schliesser†</div>
+          <div class="pub-journal">Nature, 642, 947–953</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">arXiv</a
+          </div>  -->
+        </div>
+        <div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2025</span>
+            <span class="pub-title"
+              data-en="A topological parametric phonon oscillator"
+              data-zh="A topological parametric phonon oscillator">
+              A topological parametric phonon oscillator
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi*, Jingwen Ma*, and Xiankai Sun</div>
+          <div class="pub-journal">Advanced Materials, 19, 1056–1061</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+          </div -->
+        </div>
+        <div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2023</span>
+            <span class="pub-title"
+              data-en="Membrane-in-the-middle optomechanics with a soft-clamped membrane at milliKelvin temperatures"
+              data-zh="Membrane-in-the-middle optomechanics with a soft-clamped membrane at milliKelvin temperatures">
+              Membrane-in-the-middle optomechanics with a soft-clamped membrane at milliKelvin temperatures
+            </span>
+          </div>
+          <div class="pub-authors">Eric Planz*, Xiang Xi*, Thibault Capelle*, Eric C. Langman, and Albert Schliesser</div>
+          <div class="pub-journal">Optics Express 31, 41773-41782 (2023)</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+        <div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2022</span>
+            <span class="pub-title"
+              data-en="Highly tunable broadband coherent wavelength conversion with a fiber-based optomechanical system"
+              data-zh="Highly tunable broadband coherent wavelength conversion with a fiber-based optomechanical system">
+              Highly tunable broadband coherent wavelength conversion with a fiber-based optomechanical system
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi, Chang-Ling Zou, Chun-Hua Dong, and Xiankai Sun</div>
+          <div class="pub-journal">Advanced Photonics 4 (5): 056003, Sep. 2022. [featured as cover article].</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+	    <div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2021</span>
+            <span class="pub-title"
+              data-en="Experimental investigation of the angular symmetry of optical force in a solid dielectric"
+              data-zh="Experimental investigation of the angular symmetry of optical force in a solid dielectric">
+              Experimental investigation of the angular symmetry of optical force in a solid dielectric
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi, Jingwen Ma, Zhong-Hao Zhou, Xin-Xin Hu, Yuan Chen, Chang-Ling Zou, Chun-Hua Dong, and Xiankai Sun</div>
+          <div class="pub-journal"> Optica 8 (11): 1435-1441, Nov. 2021.</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		<div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2021</span>
+            <span class="pub-title"
+              data-en="Nanomechanical topological insulators with an auxiliary orbital degree of freedom"
+              data-zh="Nanomechanical topological insulators with an auxiliary orbital degree of freedom">
+              Nanomechanical topological insulators with an auxiliary orbital degree of freedom
+            </span>
+          </div>
+          <div class="pub-authors">Jingwen Ma*, Xiang Xi*, Yuan Li, and Xiankai Sun</div>
+          <div class="pub-journal">Nature Nanotechnology 16 (5): 576-583, May 2021. </div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		
+		<div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2021</span>
+            <span class="pub-title"
+              data-en="Experimental demonstration of dual-band nano-electromechanical valley-Hall topological metamaterials"
+              data-zh="Experimental demonstration of dual-band nano-electromechanical valley-Hall topological metamaterials">
+              Experimental demonstration of dual-band nano-electromechanical valley-Hall topological metamaterials
+            </span>
+          </div>
+          <div class="pub-authors">Jingwen Ma*, Xiang Xi*, and Xiankai Sun</div>
+          <div class="pub-journal"> Advanced Materials, 33 (10): 2006521, 2021</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		
+		<div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2021</span>
+            <span class="pub-title"
+              data-en="Observation of chiral edge states in gapped nanomechanical graphene"
+              data-zh="Observation of chiral edge states in gapped nanomechanical graphene">
+              Observation of chiral edge states in gapped nanomechanical graphene
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi*, Jingwen Ma*, Shuai Wan, Chun-Hua Dong, and Xiankai Sun </div>
+          <div class="pub-journal">Science Advances, 7 (2): eabe1398, Jan. 2021</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		
+		<div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2021</span>
+            <span class="pub-title"
+              data-en="Graphene-assisted electro-optomechanical integration on a silicon-on-insulator platform"
+              data-zh="Graphene-assisted electro-optomechanical integration on a silicon-on-insulator platform">
+              Graphene-assisted electro-optomechanical integration on a silicon-on-insulator platform
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi, Zefeng Chen, Jian-Bin Xu, and Xiankai Sun</div>
+          <div class="pub-journal">Optics Express 28 (10), 14386–14395, 2020.</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		
+		<div class="pub-item">
+          <div class="pub-row1">
+            <span class="pub-year">2020</span>
+            <span class="pub-title"
+              data-en="Carrier-mediated cavity optomechanics in a semiconductor laser"
+              data-zh="Carrier-mediated cavity optomechanics in a semiconductor laser">
+              Carrier-mediated cavity optomechanics in a semiconductor laser
+            </span>
+          </div>
+          <div class="pub-authors">Xiang Xi, Jingwen Ma, and Xiankai Sun</div>
+          <div class="pub-journal">Physical Review A 99 (5): 053837, 2019.</div>
+		  <!--
+          <div class="pub-links">
+            <a href="#" class="pub-link">PDF</a>
+            <a href="#" class="pub-link">DOI</a>
+            <a href="#" class="pub-link">Data</a>
+          </div> -->
+        </div>
+		
+      </div>
+      <p style="margin-top:20px;font-size:13px;color:var(--muted);">
+        <span data-en="Full list on " data-zh="完整列表见 ">Full list on </span>
+        <a href="https://scholar.google.com/citations?user=sLdBe90AAAAJ&hl=en" target="_blank" style="color:var(--accent);">Google Scholar</a>
+        <span data-en=" and " data-zh=" 和 "> and </span>
+        <a href="https://orcid.org/0000-0001-6195-1959" target="_blank" style="color:var(--accent);">ORCID</a>.
+      </p>
+    </section>
+
+    <!-- PEOPLE -->
+    <section class="section" id="people">
+      <div class="section-label" data-en="People" data-zh="团队成员">People</div>
+      <!--<h2 data-en="The Group" data-zh="研究团队">The Group</h2> -->
+
+      <div class="people-group-label" data-en="Principal Investigator" data-zh="课题组长">Principal Investigator</div>
+      <div class="pi-card">
+        <div class="pi-avatar">PI</div>
+        <div>
+          <div class="pi-name">Xiang Xi· 习翔</div>
+          <div class="pi-title"
+            data-en="Tenure-check Assistant Professor, School of Physics · Zhejiang University"
+            data-zh="百人计划研究员，物理系 · 浙江大学">Tenure-check Assistant Professor, Department of Physics · Zhejiang University</div>
+          <div class="pi-bio"
+            data-en="Dr. Xiang Xi received his PhD from the Chinese University of Hong Kong，
+			and subsequently held a postdoctoral position and an assistant professorship at the Niels Bohr Institute, University of Copenhagen.
+			He has been working in the fields of nanomechanics and optics for over ten years.
+			<br><br>
+			Dr. Xi has published more than ten papers in related areas as a (co-)first author or corresponding author in prestigious journals, 
+			including Nature, Nature Nanotechnology, Science Advances, and Optica.
+			He has been invited to serve as a reviewer for leading journals such as Nature Physics and Nature Communications, 
+			and has delivered invited talks at international conferences, including Phonons 2025.
+			He is the recipient of the Marie Skłodowska-Curie Postdoctoral Fellowship (2023) and the Danish Villum Experiment Grant (2024)."
+            data-zh="习翔博士于香港中文大学获得博士学位，随后在哥本哈根大学尼尔斯·玻尔研究所（Niels Bohr Institute）担任博士后研究员和助理教授。
+			习翔博士长期从事纳米力学与光学领域的研究工作，拥有超过十年的研究经验。
+			<br><br>
+			他以第一作者、共同第一作者或通讯作者身份在相关领域发表了十余篇论文，
+			成果发表于 Nature、Nature Nanotechnology、Science Advances、Optica等国际知名期刊。他曾受邀担任 Nature Physics、Nature Communications 等顶级期刊的审稿人，
+			并在包括 Phonons 2025 在内的国际学术会议上作邀请报告。他曾获得欧盟玛丽·居里博士后奖学金（2023）以及丹麦 Villum 实验基金（2024）。">
+            Dr. Xiang Xi received his PhD from the Chinese University of Hong Kong，
+			and subsequently held a postdoctoral position and an assistant professorship at the Niels Bohr Institute, University of Copenhagen.
+			He has been working in the fields of nanomechanics and optics for over ten years.
+			<br><br>			
+			Dr. Xiang Xi has published more than ten papers in related areas as a (co-)first author or corresponding author in prestigious journals, 
+			including Nature, Nature Nanotechnology, Science Advances, and Optica.
+			He has been invited to serve as a reviewer for leading journals such as Nature Physics and Nature Communications, 
+			and has delivered invited talks at international conferences, including Phonons 2025.
+			He is the recipient of the Marie Skłodowska-Curie Postdoctoral Fellowship (2023) and the Danish Villum Experiment Grant (2024).
+          </div>
+        </div>
+      </div>
+
+      <div class="people-group-label" data-en="Postdoctoral Researchers" data-zh="博士后研究员">Postdoctoral Researchers</div>
+      <div class="people-grid">
+        <div class="person-card">
+          <div class="person-avatar">WL</div>
+          <div class="person-name">Dr. This can be you · XX</div>
+          <div class="person-role" data-en="Postdoctoral Researcher" data-zh="博士后">Postdoctoral Researcher</div>
+          <div class="person-topic" data-en="Quantum electromechanics" data-zh="量子电力学">Quantum electromechanics</div>
+        </div>       
+      </div>
+
+      <div class="people-group-label" data-en="PhD Students" data-zh="博士研究生">PhD Students</div>
+      <div class="people-grid">
+        <div class="person-card">
+          <div class="person-avatar">ZW</div>
+          <div class="person-name">This can be you · XX</div>
+          <div class="person-role" data-en="PhD Candidate (Year x)" data-zh="博士候选人（第x年）">PhD Candidate (Year x)</div>
+          <div class="person-topic" data-en="Quantum acoustics" data-zh="量子声学">Quantum acoustics</div>
+        </div>
+      </div>
+		<!--
+      <div class="people-group-label" data-en="Alumni" data-zh="历届成员">Alumni</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:13.5px;color:var(--text);">
+          Dr. [Name] <span style="color:var(--muted);font-size:12px;"
+            data-en="— PhD 2023 → Postdoc, [Institution]"
+            data-zh="— 博士 2023 → 博士后，[机构]">— PhD 2023 → Postdoc, [Institution]</span>
+        </div>
+        <div style="font-size:13.5px;color:var(--text);">
+          Dr. [Name] <span style="color:var(--muted);font-size:12px;"
+            data-en="— Postdoc 2021–2023 → Assistant Professor, [University]"
+            data-zh="— 博士后 2021–2023 → 助理教授，[大学]">— Postdoc 2021–2023 → Assistant Professor, [University]</span>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- OPEN POSITIONS -->
+    <section class="section" id="positions">
+      <div class="section-label" data-en="Openings" data-zh="招募信息">Openings</div>
+      <h2 data-en="Join the Lab" data-zh="加入我们">Join the Lab</h2>
+	  
+      <div class="position-list">
+
+        <div class="position-card">
+          <div class="position-header">
+            <div class="position-title" data-en="Postdoctoral Researcher" data-zh="博士后研究员">Postdoctoral Researcher</div>
+            <span class="position-badge" data-en="Open" data-zh="招募中">Open</span>
+          </div>
+          <div class="position-desc"
+            data-en="We have several postdoc position opennings for the research field of ultracoherent phononic circuits, quantum opto- and electromechanics, topological phononics, and so on. 
+			The position is fully funded for two years with possibility of extension."
+            data-zh="我们有多个博后职位放出，从事声子芯片，量子光力、电力学,拓扑声学等方向。该职位提供两年全额资助，可续签。">
+            "We have several postdoc position openning for the research field of ultracoherent phononic circuits, quantum opto- and electromechanics, topological phononics, and so on. 
+			The position is fully funded for two years with possibility of extension."
+          </div>
+          <ul class="position-reqs">
+            <li data-en="PhD in physics, optics, phononics, superconducting circuits, or related field" 
+				data-zh="物理、光学、声学，超导电路或相关领域博士学位">
+				PhD in physics, optics, phononics, superconducting circuits, or related field"</li>
+            <li data-en="Experience with opto/electro-mechanical measurements, superconducting circuits, or nanofabrication" 
+				data-zh="具备光力或者电力测量，超导电路，或纳米加工实验经验">
+				Experience with opto/electro-mechanical measurements, superconducting circuits, or nanofabrication</li>
+            <li data-en="Good passion on physics and experiments, open for collaboration" 
+				data-zh="对实验和物理有热情，有合作精神">
+				Good passion on physics and experiments, open for collaboration</li>
+          </ul>
+		  <!--
+          <a href="mailto:xiang.xi@zju.edu.cn?subject=Postdoc Application" class="position-apply"
+            data-en="Apply via Email" data-zh="发送申请邮件">Apply via Email</a> -->
+        </div>
+
+        <div class="position-card">
+          <div class="position-header">
+            <div class="position-title" data-en="PhD Students (2027 intake)" data-zh="博士研究生（2027年入学）">PhD Student (2027 intake)</div>
+            <span class="position-badge" data-en="Open" data-zh="招募中">Open</span>
+          </div>
+          <div class="position-desc"
+            data-en="We are accepting PhD applications for the 2027 academic year. Students will have the freedom to choose the research topic that is happening in the lab."
+            data-zh="我们面向2025学年招收博士研究生，学生可以自由的选择实验室中的研究方向。">
+            We are accepting PhD applications for the 2027 academic year. 
+		    Students will have the freedom to choose the research topic that is happening in the lab.
+          </div>
+          <ul class="position-reqs">
+            <li data-en="Bachelor's or Master's degree in physics or engineering" 
+				data-zh="物理或工程学学士/硕士学位">
+				Bachelor's or Master's degree in physics or engineering</li>
+            <li data-en="Background in physics, optics, or related" 
+				data-zh="扎实的物理，光学或相关学科基础">
+				Background in physics, optics, or related</li>
+            <li data-en="Lab experience is a plus" 
+				data-zh="有实验经验者优先">
+				Lab experience is a plus</li>
+          </ul>
+		  <!--
+          <a href="mailto:xiang.xi@zju.edu.cn?subject=PhD Application 2025" class="position-apply"
+            data-en="Apply via Email" data-zh="发送申请邮件">Apply via Email</a> -->
+        </div>
+
+        <div class="position-card">
+          <div class="position-header">
+            <div class="position-title" data-en="Visiting Students / Interns" data-zh="访问学生 / 实习生">Visiting Students / Interns</div>
+            <span class="position-badge" data-en="Open" data-zh="招募中">Open</span>
+          </div>
+          <div class="position-desc"
+            data-en="We welcome undergraduate, Master's students, exchange student, or others, for short-term research visits (3–6 months). 
+					Projects of great fun are available in both theory and experiment."
+            data-zh="我们欢迎本科生，硕士生，交流生，或其他学生进行短期科研访问，有很多有趣的理论与实验小课题课题可选。">
+					We welcome undergraduate, Master's students, exchange student, or others, for short-term research visits (3–6 months). 
+					Projects of great fun are available in both theory and experiment.
+          </div>
+          <ul class="position-reqs">
+            <li data-en="Currently enrolled in a Bachelor's or Master's programme, or gap year student" 
+				data-zh="目前在读本科硕士,或Gap期间学生">
+				Currently enrolled in a Bachelor's or Master's programme, or gap year student</li>
+            <li data-en="Interest in optics, mechanics, and quantum physics or quantum information" 
+				data-zh="对光学，声学，量子物理或量子信息感兴趣">
+				Interest in optics， mechanics，and quantum physics or quantum information</li>
+          </ul>
+		  <!--
+          <a href="mailto:xiang.xi@zju.edu.cn?subject=Visiting Student Inquiry" class="position-apply"
+            data-en="Apply via Email" data-zh="发送申请邮件">Apply via Email</a> -->
+        </div>
+
+      </div>
+    </section>
+	
+	    <!-- GROUP PICTURES -->
+    <section class="section" id="gallery">
+      <div class="section-label" data-en="Gallery" data-zh="照片">Gallery</div>
+      <h2 data-en="Life about the Group" data-zh="研究组生活">Life about the Group</h2>
+      <div class="gallery-grid">
+
+        <!-- Wide feature photo -->
+        <!--<div class="gallery-item wide">-->
+		<div class="gallery-item">
+          <!-- To add a photo: <img src="photos/group-2024.jpg" alt="Group photo 2024"> -->
+		  <img src="photos/Paine_2026.jpg" alt="Paine_2026">
+          <span class="gallery-placeholder-icon">📸</span>
+          <span class="gallery-placeholder-text"
+            data-en="Group photo 2024 — replace with: &lt;img src=&quot;photos/Paine_2026.jpg&quot;&gt;"
+            data-zh="2024年团队合影 — 替换为: &lt;img src=&quot;photos/Paine_2026.jpg&quot;&gt;">
+            Group photo 2024 — replace with: &lt;img src="photos/group-2024.jpg"&gt;
+          </span>
+          <div class="gallery-caption" data-en="Hiking at Patagonia" data-zh="Hiking at Patagonia">Hiking at Patagonia</div>
+        </div>
+
+        <div class="gallery-item">
+          <span class="gallery-placeholder-icon">🔬</span>
+          <span class="gallery-placeholder-text"
+            data-en="Lab equipment photo"
+            data-zh="实验设备照片">Lab equipment photo</span>
+          <div class="gallery-caption" data-en="Dilution refrigerator setup" data-zh="稀释制冷机装置">Dilution refrigerator setup</div>
+        </div>
+
+        <div class="gallery-item">
+          <span class="gallery-placeholder-icon">🎉</span>
+          <span class="gallery-placeholder-text"
+            data-en="Lab event photo"
+            data-zh="实验室活动照片">Lab event photo</span>
+          <div class="gallery-caption" data-en="Lab retreat 2024" data-zh="2024年团队活动">Lab retreat 2024</div>
+        </div>
+		<!--
+        <div class="gallery-item">
+          <span class="gallery-placeholder-icon">🏆</span>
+          <span class="gallery-placeholder-text"
+            data-en="Conference photo"
+            data-zh="会议照片">Conference photo</span>
+          <div class="gallery-caption" data-en="QIP 2024 conference" data-zh="QIP 2024 会议">QIP 2024 conference</div>
+        </div> -->
+		<!--
+        <div class="gallery-item">
+          <span class="gallery-placeholder-icon">⚙️</span>
+          <span class="gallery-placeholder-text"
+            data-en="Cleanroom photo"
+            data-zh="洁净室照片">Cleanroom photo</span>
+          <div class="gallery-caption" data-en="Device fabrication" data-zh="器件制备">Device fabrication</div>
+        </div> -->
+
+      </div>
+      <!--
+	  <p style="margin-top:14px;font-size:12.5px;color:var(--muted);"
+        data-en="To add your own photos: place image files in a photos/ folder, then replace each placeholder with &lt;img src=&quot;photos/filename.jpg&quot; alt=&quot;description&quot;&gt; inside the gallery-item div."
+        data-zh="添加照片方法：将图片文件放入 photos/ 文件夹，然后在对应 gallery-item div 中用 &lt;img src=&quot;photos/文件名.jpg&quot; alt=&quot;描述&quot;&gt; 替换占位符。">
+        To add your own photos: place image files in a <code>photos/</code> folder, then replace each placeholder with <code>&lt;img src="photos/filename.jpg"&gt;</code> inside the gallery-item div.
+      </p> -->
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="section-label" data-en="Contact" data-zh="联系我们">Contact</div>
+      <h2 data-en="Get in Touch" data-zh="联系方式">Get in Touch</h2>
+      <div class="contact-grid">
+        <div>
+          <div class="contact-block-label" data-en="Email" data-zh="电子邮件">Email</div>
+          <a href="mailto:xiang.xi@zju.edu.cn" style="color:var(--accent);font-size:14px;text-decoration:none;">xiang.xi@zju.edu.cn</a>
+        </div>
+        <div>
+          <div class="contact-block-label" data-en="Address" data-zh="地址">Address</div>
+          <div style="font-size:13.5px;color:var(--muted);line-height:1.7;"
+            data-en="No. 8 Hainayuan Building, Zijingang Campus<br>Zhejiang University<br>Hangzhou, China"
+            data-zh="紫金港校区海纳苑8幢<br>浙江大学<br>杭州，中国">
+            No. 8 Hainayuan Building, Zijingang Campus<br>Zhejiang University<br>Hangzhou, China
+          </div>
+        </div>
+        <div>
+          <div class="contact-block-label" data-en="For Prospective Members" data-zh="申请加入">For Prospective Members</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.65;"
+            data-en="Please email your CV and a brief description of your research interests. See Open Positions for current openings."
+            data-zh="请发送简历及研究兴趣简述至上述邮箱。当前开放职位详见招募信息。">
+            Please email your CV and a brief description of your research interests. See Open Positions for current openings.
+          </div>
+        </div>
+        <div>
+          <div class="contact-block-label" data-en="Links" data-zh="链接">Links</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <a href="https://scholar.google.com/citations?user=sLdBe90AAAAJ&hl=en" style="font-size:13.5px;color:var(--accent);text-decoration:none;">Google Scholar</a>
+            <a href="https://orcid.org/0000-0001-6195-1959" style="font-size:13.5px;color:var(--accent);text-decoration:none;">ORCID</a>
+            <!--<a href="cv.pdf" style="font-size:13.5px;color:var(--accent);text-decoration:none;"
+              data-en="Download CV" data-zh="下载简历">Download CV</a> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">X<sup>2</sup> Lab</div>
+  <div class="footer-copy"
+    data-en="© 2026 X² Lab · Hybrid Quantum Optomechanics Systems · Zhejiang University"
+    data-zh="© 2026 X² 实验室 · 混合量子光力系统 · 浙江大学">
+    © 2026 X² Lab · Hybrid Quantum Optomechanics Systems · Zhejiang University
+  </div>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    document.querySelectorAll('[data-en][data-zh]').forEach(el => {
+      const val = el.getAttribute('data-' + lang);
+      if (val) el.innerHTML = val;
+    });
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  }
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const sideLinks = document.querySelectorAll('.sidebar nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        sideLinks.forEach(l => l.classList.remove('active'));
+        const id = entry.target.id || 'hero';
+        const a = document.querySelector(`.sidebar nav a[href="#${entry.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
