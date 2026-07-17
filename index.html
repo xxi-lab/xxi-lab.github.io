@@ -234,19 +234,62 @@
     .person-name { font-size: 13.5px; font-weight: 500; color: var(--text); }
     .person-role { font-size: 11.5px; color: var(--muted); }
     .person-topic { font-size: 11.5px; color: var(--accent); }
-    .pi-card {
-      display: flex; gap: 24px; align-items: flex-start;
-      background: var(--bg-soft); border-radius: 8px; padding: 24px; margin-bottom: 8px;
-    }
-    .pi-avatar {
-      width: 64px; height: 64px; border-radius: 50%; background: var(--accent-bg);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
-      color: var(--accent); flex-shrink: 0;
-    }
-    .pi-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-    .pi-title { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
-    .pi-bio { font-size: 13px; color: var(--muted); line-height: 1.65; text-align: justify;}
+   .pi-card {
+	  display: flex;              /* 启用 Flex 布局 */
+	  gap: 40px;                 /* 左右两栏间距 */
+	  padding: 30px;
+	  max-width: 1000px;
+	  background: #f8f9fa;
+	  border-radius: 16px;
+	  align-items: flex-start;   /* 顶部对齐 */
+	}
+
+	/* ===== 左栏 ===== */
+	.pi-left {
+	  flex: 0 0 200px;           /* 固定宽度 280px，不伸缩 */
+	  display: flex;
+	  flex-direction: column;    /* 纵向排列：照片→姓名→头衔 */
+	  align-items: center;       /* 居中对齐 */
+	  text-align: center;
+	  gap: 8px;
+	}
+
+	.pi-avatar {
+	  width: 180px;
+	  height: 180px;
+	  border-radius: 2%;
+	  object-fit: cover;
+	  border: 3px solid #fff;
+	  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	  margin-bottom: 8px;
+	}
+
+	.pi-name {
+	  font-size: 24px;
+	  font-weight: 700;
+	  color: #1a1a2e;
+	  margin: 0;
+	}
+
+	.pi-title {
+	  font-size: 15px;
+	  color: #4a4a6a;
+	  line-height: 1.2;
+	  margin: 0;
+	}
+
+	/* ===== 右栏 ===== */
+	.pi-right {
+	  flex: 1;                   /* 占据剩余所有空间 */
+	  min-width: 0;              /* 防止溢出 */
+	}
+
+	.pi-bio {
+	  font-size: 15px;
+	  line-height: 1.5;
+	  color: #2d2d44;
+	  margin: 0;
+	}
 
     /* ── GROUP PICTURES ── */
     .gallery-grid {
@@ -737,14 +780,18 @@
       <!--<h2 data-en="The Group" data-zh="研究团队">The Group</h2> -->
 
       <div class="people-group-label" data-en="Principal Investigator" data-zh="课题组长">Principal Investigator</div>
-      <div class="pi-card">
-        <div class="pi-avatar">PI</div>
-        <div>
+    <div class="pi-card">
+		<div class="pi-left">
+		  <img class="pi-avatar" src="photos/xiang_xi.jpg" alt="Xiang Xi's photo">
           <div class="pi-name">Xiang Xi· 习翔</div>
           <div class="pi-title"
-            data-en="Tenure-check Assistant Professor, School of Physics · Zhejiang University"
-            data-zh="百人计划研究员，物理系 · 浙江大学">
-			Tenure-check Assistant Professor, School of Physics · Zhejiang University</div>
+            data-en="Tenure-check Assistant Professor <br><br> School of Physics <br><br> Zhejiang University"
+            data-zh="百人计划研究员
+			<br><br>
+			浙江大学物理学院">
+			Tenure-check Assistant Professor<br><br>School of Physics<br><br>Zhejiang University</div>
+		</div>
+		<div class="pi-right">
           <div class="pi-bio"
             data-en="Dr. Xiang Xi received his PhD from the Chinese University of Hong Kong，
 			and subsequently held a postdoctoral position and an assistant professorship at the Niels Bohr Institute, University of Copenhagen.
