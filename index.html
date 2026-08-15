@@ -76,6 +76,136 @@
     font-family: 'Inter', 'Noto Sans SC', sans-serif;
   }
   .lang-btn.active { background: var(--bg); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  
+ /* ── HAMBURGER MENU ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 300;
+  }
+  .hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2.5px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.2s ease, background 0.25s ease;
+    transform-origin: center;
+  }
+  /* 汉堡菜单打开时的动画（变成叉号） */
+  .hamburger.open .hamburger-line:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+  }
+  .hamburger.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .hamburger.open .hamburger-line:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
+  }
+
+  /* ── 移动端导航菜单（滑出面板） ── */
+  .mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 150;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .mobile-nav-overlay.open {
+    opacity: 1;
+  }
+  .mobile-nav-panel {
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 260px;
+    max-width: 75vw;
+    height: 100%;
+    background: var(--bg);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+    z-index: 250;
+    padding: 80px 28px 40px;
+    transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mobile-nav-panel.open {
+    right: 0;
+  }
+  .mobile-nav-panel a {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--divider);
+    transition: color 0.15s, padding-left 0.15s;
+    display: block;
+  }
+  .mobile-nav-panel a:hover,
+  .mobile-nav-panel a.active {
+    color: var(--accent);
+    padding-left: 8px;
+  }
+  .mobile-nav-panel .panel-lang {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider);
+  }
+  .mobile-nav-panel .panel-lang button {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--divider);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .mobile-nav-panel .panel-lang button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* 在移动端显示汉堡按钮，隐藏桌面导航链接 */
+  @media (max-width: 860px) {
+    .hamburger {
+      display: flex;
+    }
+    .nav-links {
+      display: none !important;
+    }
+    .mobile-nav-overlay {
+      display: block;
+      pointer-events: none;
+    }
+    .mobile-nav-overlay.open {
+      pointer-events: auto;
+    }
+    .nav-left .nav-inst {
+      display: none;
+    }
+  }
 
   /* ── LAYOUT ── */
   .page-layout {
@@ -506,20 +636,43 @@
   <div class="nav-left">
     <a href="#" class="nav-logo" onclick="showPage('home')">X<sup>2</sup> Lab</a>
     <span class="nav-inst" data-en="Hybrid Quantum System" data-zh="混合量子系统">Hybrid Quantum System</span>
-    <div class="nav-links">
-      <a class="active" data-page="home"     data-en="Home"         data-zh="首页">Home</a>
-      <a data-page="research" data-en="Research"     data-zh="研究方向">Research</a>
+    <div class="nav-links" id="navLinks">
+      <a class="active" data-page="home" data-en="Home" data-zh="首页">Home</a>
+      <a data-page="research" data-en="Research" data-zh="研究方向">Research</a>
       <a data-page="publications" data-en="Publications" data-zh="论文成果">Publications</a>
-      <a data-page="people"   data-en="People"       data-zh="团队成员">People</a>
-      <a data-page="positions" data-en="Openings"     data-zh="招募信息">Openings</a>
-      <a data-page="gallery"  data-en="Gallery"      data-zh="团队照片">Gallery</a>
+      <a data-page="people" data-en="People" data-zh="团队成员">People</a>
+      <a data-page="positions" data-en="Openings" data-zh="招募信息">Openings</a>
+      <a data-page="gallery" data-en="Gallery" data-zh="团队照片">Gallery</a>
     </div>
   </div>
-  <div class="lang-toggle">
-    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-    <button class="lang-btn"        id="btn-zh" onclick="setLang('zh')">中文</button>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <!-- 汉堡菜单按钮（移动端显示） -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-zh" onclick="setLang('zh')">中文</button>
+    </div>
   </div>
 </header>
+
+<!-- ── 移动端导航遮罩和面板 ── -->
+<div class="mobile-nav-overlay" id="mobileOverlay"></div>
+<div class="mobile-nav-panel" id="mobilePanel">
+  <a class="active" data-page="home" data-en="Home" data-zh="首页" onclick="closeMobileNav(); showPage('home');">Home</a>
+  <a data-page="research" data-en="Research" data-zh="研究方向" onclick="closeMobileNav(); showPage('research');">Research</a>
+  <a data-page="publications" data-en="Publications" data-zh="论文成果" onclick="closeMobileNav(); showPage('publications');">Publications</a>
+  <a data-page="people" data-en="People" data-zh="团队成员" onclick="closeMobileNav(); showPage('people');">People</a>
+  <a data-page="positions" data-en="Openings" data-zh="招募信息" onclick="closeMobileNav(); showPage('positions');">Openings</a>
+  <a data-page="gallery" data-en="Gallery" data-zh="团队照片" onclick="closeMobileNav(); showPage('gallery');">Gallery</a>
+  <div class="panel-lang">
+    <button class="active" id="panelBtnEn" onclick="setLang('en'); updatePanelLang('en');">EN</button>
+    <button id="panelBtnZh" onclick="setLang('zh'); updatePanelLang('zh');">中文</button>
+  </div>
+</div>
 
 <!-- ── PAGE LAYOUT ── -->
 <div class="page-layout">
@@ -634,8 +787,7 @@
               <span class="icon">⚛️</span>
               <h3 data-en="Ultra-low-loss hybrid phononic circuits" data-zh="超低损耗混合光-声-电芯片">Ultra-low-loss hybrid phononic circuits</h3>
               <p data-en="Our research focuses on designing ultra-low-loss phononic devices and understanding their fundamental physics. 
-							We aim to build photon-phonon integrated chips, analogous to electronic ICs, 
-							and heterogeneously integrate phononic devices with superconducting circuits for quantum sensing and applications. 
+							We aim to build photon-phonon integrated circuits, and heterogeneously integrate phononic devices with superconducting circuits for quantum sensing and applications. 
 							We also explore topological physics on phononic chip platforms."
                  data-zh="我们致力于世界领先水平的超低损耗声子器件的设计、制备，探索其物理机制，并构建光子-声子集成芯片。同时，我们将声子器件与超导芯片异质集成，用于混合量子系统，并在声子芯片上研究拓扑物理。">
                 Our research focuses on designing ultra-low-loss phononic devices and understanding their fundamental physics. 
@@ -1094,6 +1246,63 @@
     if (hash && pages[hash]) showPage(hash);
     else showPage('home');
     initCarousel();
+	
+	// ── 汉堡菜单控制 ──
+	const hamburgerBtn = document.getElementById('hamburgerBtn');
+	const mobilePanel = document.getElementById('mobilePanel');
+	const mobileOverlay = document.getElementById('mobileOverlay');
+
+	function openMobileNav() {
+	  mobilePanel.classList.add('open');
+	  mobileOverlay.classList.add('open');
+	  hamburgerBtn.classList.add('open');
+	  document.body.style.overflow = 'hidden';
+	}
+
+	function closeMobileNav() {
+	  mobilePanel.classList.remove('open');
+	  mobileOverlay.classList.remove('open');
+	  hamburgerBtn.classList.remove('open');
+	  document.body.style.overflow = '';
+	}
+
+	function toggleMobileNav() {
+	  if (mobilePanel.classList.contains('open')) {
+		closeMobileNav();
+	  } else {
+		openMobileNav();
+	  }
+	}
+
+	// 点击汉堡按钮切换菜单
+	if (hamburgerBtn) {
+	  hamburgerBtn.addEventListener('click', toggleMobileNav);
+	}
+
+	// 点击遮罩关闭菜单
+	if (mobileOverlay) {
+	  mobileOverlay.addEventListener('click', closeMobileNav);
+	}
+
+	// 窗口大小变化时，如果从小屏幕切到大屏幕，自动关闭移动菜单
+	window.addEventListener('resize', () => {
+	  if (window.innerWidth > 860 && mobilePanel.classList.contains('open')) {
+		closeMobileNav();
+	  }
+	});
+
+	// 暴露 closeMobileNav 给全局（供 onclick 调用）
+	window.closeMobileNav = closeMobileNav;
+
+	// 更新面板中的语言按钮状态
+	function updatePanelLang(lang) {
+	  const panelEn = document.getElementById('panelBtnEn');
+	  const panelZh = document.getElementById('panelBtnZh');
+	  if (panelEn && panelZh) {
+		panelEn.classList.toggle('active', lang === 'en');
+		panelZh.classList.toggle('active', lang === 'zh');
+	  }
+	}
   });
 
   // ── CAROUSEL with arrow controls ──
